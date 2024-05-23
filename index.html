@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Korean Character Choose the Right One</title>
+    <title>Korean Character Choose the Right One</title>    
+
     <style>
         
         body {
@@ -63,6 +64,14 @@
             justify-content: center;
         }
 
+        #output img {
+            transition: transform 0.3s;
+        }
+
+        #output img:hover {
+            transform: scale(1.1);
+        }
+
         #output div {
             text-align: center;
             margin: 10px;
@@ -91,16 +100,16 @@
             font-size: 20px;
         }
 
-        #theme-selector {
+        #numImages, #imageWidth, #theme-selector {
             margin-top: 20px;
         }
 
-        #theme-selector select {
+        #numImages, #imageWidth, #theme-selector select {
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            background-color: white;
+            background-color: #fff;
             cursor: pointer;
         }
 
@@ -118,7 +127,7 @@
             color: #333;
         }
 
-        #theme-selector option:hover {
+        #numImages, #imageWidth, #theme-selector option:hover {
             background-color: #f0f0f0;
         }
 
@@ -146,20 +155,30 @@
             }
         }
 
-
-
         
     </style>        
 </head>
 <body>
     <h1>Korean Character Choose the Right One</h1>
     <div id="container">
+
         <label for="numImages">Number of Pictures:</label>
-        <input type="number" id="numImages" min="1" min="20" step="1" value="5">
+        <select id="numImages" style="background-color: #fff;">
+            <option value="3">3</option>
+            <option value="5" selected>5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+        </select>
+        
         <br>
         <label for="imageWidth">Image Width (px):</label>
-        <input type="range" id="imageWidth" min="20" step="10" value="60">
-        <span id="imageWidthValue">60px</span>
+        <select id="imageWidth" style="background-color: #fff;">
+            <option value="90">90px</option>
+            <option value="100">100px</option>
+            <option value="120">120px</option>
+        </select>
+        
+
         <button id="generate">Generate</button>
         <div id="theme-selector">
             <label for="themeSelect">Select Theme:</label>
@@ -223,6 +242,24 @@
 
 
         };
+
+        const numImagesSelect = document.getElementById("numImages");
+
+        // Listen for change event to update displayed value
+        numImagesSelect.addEventListener("change", function () {
+            const numImages = parseInt(numImagesSelect.value);
+            // Call any necessary functions or perform actions based on the selected value
+        });
+
+
+        const imageWidthSelect = document.getElementById("imageWidth");
+
+        // Listen for change event to update displayed value
+        imageWidthSelect.addEventListener("change", function () {
+            const width = imageWidthSelect.value;
+            updateImageWidth(width);
+        });
+
 
         let score = 0;
     
