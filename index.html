@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korean Character Choose the Right One</title>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #container {
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            max-width: 75%;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="number"] {
+            width: 50px;
+            padding: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        #output {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #output div {
+            text-align: center;
+            margin: 10px;
+        }
+
+        #output img {
+            max-width: 60px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .image-description {
+            font-size: 30px;
+            margin-top: 5px;
+            color: #666;
+        }
+
+        #result.correct {   
+            color: green;
+            font-size: 20px;
+        }
+
+        #result.wrong {
+            color: red;
+            font-size: 20px;
+        }
+
+        #theme-selector {
+            margin-top: 20px;
+        }
+
+        #theme-selector select {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        #theme-selector select:hover {
+            background-color: #f0f0f0;
+        }
+
+        #theme-selector select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        #theme-selector option {
+            background-color: white;
+            color: #333;
+        }
+
+        #theme-selector option:hover {
+            background-color: #f0f0f0;
+        }
+
+        #imageWidth {
+            margin-top: 10px;
+        }
+
+        .shake {
+            animation: shake 0.3s ease-in-out;
+            border: 2px solid red !important; /* Override the border style for a red border */
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            50% {
+                transform: translateX(5px);
+            }
+            75% {
+                transform: translateX(-5px);
+            }
+        }
+
+
+
+        
+    </style>        
+</head>
+<body>
+    <h1>Korean Character Choose the Right One</h1>
+    <div id="container">
+        <label for="numImages">Number of Pictures:</label>
+        <input type="number" id="numImages" min="1" min="20" step="1" value="5">
+        <br>
+        <label for="imageWidth">Image Width (px):</label>
+        <input type="range" id="imageWidth" min="20" step="10" value="60">
+        <span id="imageWidthValue">60px</span>
+        <button id="generate">Generate</button>
+        <div id="theme-selector">
+            <label for="themeSelect">Select Theme:</label>
+            <select id="themeSelect">
+                <option value="theme1">Basic Vowels</option>
+                <option value="theme2">Compound Vowels</option>
+                <option value="theme3">Basic Consonants</option>
+            </select>
+        </div>
+        <br><br>
+        <p id="description"></p>
+        <div id="output"></div>
+        <p id="result"></p>
+        <p id="score">Score: <span id="scoreValue"></span></p>
+    </div>
+
+    <script>
+        const themes = {    
+            theme1: [
+            { path: 'Vowels/A.png', description: 'A' },
+            { path: 'Vowels/EO.png', description: 'EO' },
+            { path: 'Vowels/EU.png', description: 'EU' },
+            { path: 'Vowels/I.png', description: 'I' },
+            { path: 'Vowels/O.png', description: 'O' },
+            { path: 'Vowels/U.png', description: 'U' },
+            { path: 'Vowels/YA.png', description: 'YA' },
+            { path: 'Vowels/YEO.png', description: 'YEO' },
+            { path: 'Vowels/YO.png', description: 'YO' },
+            { path: 'Vowels/YU.png', description: 'YU' }
+            ],
+
+            theme2: [
+            { path: 'Compound Vowels/AE.png', description: 'AE' },
+            { path: 'Compound Vowels/E.png', description: 'E' },
+            { path: 'Compound Vowels/OE.png', description: 'OE' },
+            { path: 'Compound Vowels/UI.png', description: 'UI' },
+            { path: 'Compound Vowels/WA.png', description: 'WA' },
+            { path: 'Compound Vowels/WAE.png', description: 'WAE' },
+            { path: 'Compound Vowels/WE.png', description: 'WE' },
+            { path: 'Compound Vowels/WI.png', description: 'WI' },
+            { path: 'Compound Vowels/WO.png', description: 'WO' },
+            { path: 'Compound Vowels/YAE.png', description: 'YAE' },  
+            { path: 'Compound Vowels/YE.png', description: 'YE' }
+            ],
+
+            theme3: [
+            { path: 'Consonants/B.png', description: 'B' },
+            { path: 'Consonants/C.png', description: 'C' },
+            { path: 'Consonants/D.png', description: 'D' },
+            { path: 'Consonants/G.png', description: 'G' },
+            { path: 'Consonants/H.png', description: 'H' },
+            { path: 'Consonants/J.png', description: 'J' },
+            { path: 'Consonants/K.png', description: 'K' },
+            { path: 'Consonants/M.png', description: 'M' },
+            { path: 'Consonants/N.png', description: 'N' },
+            { path: 'Consonants/P.png', description: 'P' },  
+            { path: 'Consonants/R.png', description: 'R' },  
+            { path: 'Consonants/S.png', description: 'S' },  
+            { path: 'Consonants/T.png', description: 'T' }
+            ]
+
+
+        };
+
+        let score = 0;
+    
+        function updateScore(correct) {
+        if (correct) {
+            score++;
+        } else {
+            score;
+        }
+        document.getElementById("scoreValue").textContent = score;
+        }
+        const imageWidthInput = document.getElementById("imageWidth");
+        const imageWidthValue = document.getElementById("imageWidthValue");
+        // Listen for input change to update displayed value
+        imageWidthInput.addEventListener("input", function () {
+            const width = imageWidthInput.value;
+            imageWidthValue.textContent = width + 'px';
+            updateImageWidth(width);
+        });     
+     
+        // Function to update image width
+        function updateImageWidth(width) {
+            const images = document.querySelectorAll('#output img');
+            images.forEach(image => {
+                image.style.maxWidth = width + 'px';
+            });
+        }
+    
+        function shuffle(array) {
+        let currentIndex = array.length, temporaryValue, randomIndex;
+        
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+    
+        return array;
+    
+        }
+        const generateButton = document.getElementById("generate");
+        const outputDiv = document.getElementById("output");
+        const descriptionParagraph = document.getElementById("description");
+        const resultParagraph = document.getElementById("result");
+        const themeSelect = document.getElementById("themeSelect");
+    
+        generateButton.addEventListener("click", function () {
+
+        const numImages = parseInt(document.getElementById("numImages").value);
+        const selectedTheme = themeSelect.value;
+        const themeCharacters = themes[selectedTheme];
+        const shuffledImages = shuffle(themeCharacters.slice());
+        const correctImageIndex = Math.floor(Math.random() * numImages);
+        const { description } = shuffledImages[correctImageIndex];
+        const imageWidth = parseInt(document.getElementById("imageWidth").value);
+        outputDiv.innerHTML = "";
+
+        descriptionParagraph.textContent = description;
+        let outputHTML = "";
+        for (let i = 0; i < numImages; i++) {
+            const { path } = shuffledImages[i];
+            outputHTML += `
+                <div>
+                    <img src="${path}" alt="Random Image" data-description="${description}" data-index="${i}" style="max-width: ${imageWidth}px;">
+                </div>
+            `;
+
+        }
+        outputDiv.innerHTML = outputHTML;
+        const images = document.querySelectorAll('#output img');
+        images.forEach(image => {
+            image.addEventListener('click', () => {
+                const clickedDescription = image.getAttribute('data-description');
+                const clickedIndex = parseInt(image.getAttribute('data-index'));
+                const isCorrect = clickedIndex === correctImageIndex;
+                updateScore(isCorrect); // Update score based on correctness
+
+                if (!isCorrect) {
+                        image.classList.add('shake'); // Add the shake class for incorrect answer
+                        setTimeout(() => {
+                            image.classList.remove('shake'); 
+                        }, 500);
+                }
+
+                if (isCorrect) {
+                    resultParagraph.classList.add('correct');
+                    resultParagraph.classList.remove('wrong');
+                    resultParagraph.innerText = 'Correct!';
+                    setTimeout(() => {
+                        generateButton.click(); 
+                    }, 100);
+                }
+
+                 else {
+                    resultParagraph.classList.add('wrong');
+                    resultParagraph.classList.remove('correct');
+                    resultParagraph.innerText = 'Wrong!';
+                }
+
+            });
+        });
+    });
+
+
+
+    </script>
+</body>
+</html>
